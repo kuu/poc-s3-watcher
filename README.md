@@ -11,7 +11,7 @@ $ npm install
 # Configure
 
 ## AWS SDK
-In ~/.aws/credentials
+In ~/.aws/credentials (Windows: C:\Users\USER_NAME\.aws\credentials)
 ```
 [default]
 aws_access_key_id = Your-Access-Key-ID
