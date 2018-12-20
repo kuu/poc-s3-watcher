@@ -1,0 +1,42 @@
+{
+  "name": "poc-s3-watcher",
+  "version": "1.0.0",
+  "description": "# Install",
+  "main": "index.js",
+  "scripts": {
+    "lint": "xo",
+    "test": "npm run lint && node index.js",
+    "start": "forever start --spinSleepTime 10000 -o server.log -e error.log ./index.js",
+    "stop": "forever stop ./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kuu/poc-s3-watcher.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kuu/poc-s3-watcher/issues"
+  },
+  "homepage": "https://github.com/kuu/poc-s3-watcher#readme",
+  "dependencies": {
+    "aws-sdk": "^2.380.0",
+    "config": "^3.0.1",
+    "debug": "^4.1.0",
+    "node-fetch": "^2.3.0"
+  },
+  "devDependencies": {
+    "forever": "^0.15.3",
+    "xo": "^0.23.0"
+  },
+  "xo": {
+    "esnext": true,
+    "space": true,
+    "rules": {
+      "capitalized-comments": 0,
+      "no-await-in-loop": 0,
+      "unicorn/catch-error-name": 0
+    }
+  }
+}
