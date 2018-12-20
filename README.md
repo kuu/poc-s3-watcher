@@ -10,7 +10,7 @@ $ npm install
 
 # Configure
 
-#AWS SDK
+## AWS SDK
 In ~/.aws/credentials
 ```
 [default]
@@ -18,7 +18,7 @@ aws_access_key_id = Your-Access-Key-ID
 aws_secret_access_key = Your-Secret-Access-Key
 ```
 
-#App Config
+## App Config
 In ./config/default.json
 ```
 {
