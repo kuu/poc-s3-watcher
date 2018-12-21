@@ -66,10 +66,11 @@ function checkUpdated(bucketName) {
     .then(async () => {
       if (updateList.length > 0) {
         for (const file of updateList) {
-          if (await checkIfAssetExists(file)) {
+          const fileName = `/${bucketName}/${file}`;
+          if (await checkIfAssetExists(fileName)) {
             continue;
           }
-          await launchNotificationWorkflow(bucketName, file);
+          await launchNotificationWorkflow(bucketName, fileName);
         }
       }
     });
