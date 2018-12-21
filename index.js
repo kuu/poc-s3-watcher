@@ -69,7 +69,7 @@ function checkUpdated(bucketName) {
           if (await checkIfAssetExists(file)) {
             continue;
           }
-          await launchNotificationWorkflow(file);
+          await launchNotificationWorkflow(bucketName, file);
         }
       }
     });

@@ -35,12 +35,13 @@ function makeRequest(uri, method = 'GET', data) {
     });
 }
 
-function launchNotificationWorkflow(incomingFile) {
+function launchNotificationWorkflow(bucketName, incomingFile) {
   return makeRequest(`${baseUri}/workflows`, 'POST', {
     definitionId: workflowDefinitionId,
     workspaceId,
     stringVariables: {
-      incomingFile
+      incomingFile,
+      url: `https://s3-ap-northeast-1.amazonaws.com/${bucketName}/${incomingFile}`
     }
   });
 }
