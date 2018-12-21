@@ -23,8 +23,6 @@ In ./config/default.json
 ```
 {
   "s3": {
-    "bucketName": "Amazon S3 Bucket Name",
-    "rootPrefix": "Prefix to start traverse",
     "extensionList": [".m2t", ".mp4"],
     "nMinutesBefore": 10
   },

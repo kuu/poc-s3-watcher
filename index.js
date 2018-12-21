@@ -1,25 +1,15 @@
 const config = require('config');
 const AWS = require('aws-sdk');
+const debug = require('debug')('s3-watcher');
 
 const {checkIfAssetExists, launchNotificationWorkflow} = require('./launch');
 
 const {
-  bucketName,
-  rootPrefix,
   extensionList,
   nMinutesBefore
 } = config.s3;
 
 const THRESHOLD = nMinutesBefore * 60000;
-
-const s3 = new AWS.S3({
-  params: {
-    Bucket: bucketName,
-    Delimiter: '/'
-  }
-});
-
-const root = {Prefix: rootPrefix};
 
 function checkIfNewFile(file, extensionList) {
   const fileName = file.Key;
@@ -35,18 +25,19 @@ function checkIfNewFile(file, extensionList) {
   return false;
 }
 
-function visitDir(prefix, extensionList, updateList) {
+function visitDir(s3, prefix, extensionList, updateList) {
   const currentPrefix = prefix.Prefix;
   return s3.listObjects(prefix).promise()
     .then(async ({Contents: list, CommonPrefixes: prefixList}) => {
-      // console.log(`[${currentPrefix}] ---`);
+      // debug(`[${currentPrefix}] ---`);
       for (const file of list) {
         const fileName = file.Key;
         if (fileName === currentPrefix) {
           continue;
         }
-        // console.log(JSON.stringify(file, null, 2));
+        // debug(JSON.stringify(file, null, 2));
         if (checkIfNewFile(file, extensionList)) {
+          debug(`Update found: ${fileName}`);
           updateList.push(`${fileName}`);
         }
       }
@@ -54,7 +45,7 @@ function visitDir(prefix, extensionList, updateList) {
         return;
       }
       for (const dir of prefixList) {
-        await visitDir(dir, extensionList, updateList);
+        await visitDir(s3, dir, extensionList, updateList);
       }
     })
     .catch(err => {
@@ -62,25 +53,44 @@ function visitDir(prefix, extensionList, updateList) {
     });
 }
 
-function checkUpdated() {
+function checkUpdated(bucketName) {
+  const s3 = new AWS.S3({
+    params: {
+      Bucket: bucketName,
+      Delimiter: '/'
+    }
+  });
   const updateList = [];
-  return visitDir(root, extensionList, updateList)
+  const root = {Prefix: ''};
+  return visitDir(s3, root, extensionList, updateList)
     .then(async () => {
       if (updateList.length > 0) {
-        console.log('Update List:');
         for (const file of updateList) {
           if (await checkIfAssetExists(file)) {
             continue;
           }
-          console.log(`\t${file}`);
           await launchNotificationWorkflow(file);
         }
       }
     });
 }
 
+function checkAllBuckets() {
+  const s3 = new AWS.S3();
+  return s3.listBuckets().promise()
+    .then(async ({Buckets: list}) => {
+      for (const {Name: bucketName} of list) {
+        if (!bucketName.startsWith('ingest-')) {
+          continue;
+        }
+        // debug(`Enter bucket: ${bucketName}`);
+        await checkUpdated(bucketName);
+      }
+    });
+}
+
 function tick() {
-  return checkUpdated()
+  return checkAllBuckets()
     .then(() => {
       setTimeout(tick, THRESHOLD / 2);
     })
