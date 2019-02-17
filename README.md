@@ -32,6 +32,11 @@ In ./config/default.json
     "user": "Your Flex User ID",
     "pass": "Your Flex Password",
     "workflowDefinitionId": 126519
+  },
+  "bc": {
+    "accountId": "Your Brighcove Account ID",
+    "user": "Your Brighcove User ID",
+    "pass": "Your Brighcove Password"
   }
 }
 ```

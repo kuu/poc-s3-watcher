@@ -3,6 +3,7 @@ const AWS = require('aws-sdk');
 const debug = require('debug')('s3-watcher');
 
 const {checkIfAssetExists, launchNotificationWorkflow} = require('./launch');
+const {ingestVideoFromURL} = require('./ingest');
 
 const {
   extensionList,
@@ -70,7 +71,9 @@ function checkUpdated(bucketName) {
           if (await checkIfAssetExists(fileName)) {
             continue;
           }
-          await launchNotificationWorkflow(fileName);
+          const url = `https://s3-ap-northeast-1.amazonaws.com${fileName}`;
+          const videoId = await ingestVideoFromURL(file, url);
+          await launchNotificationWorkflow(fileName, url, videoId);
         }
       }
     });
