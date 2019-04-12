@@ -26,16 +26,26 @@ In ./config/default.json
     "extensionList": [".m2t", ".mp4"],
     "nMinutesBefore": 10
   },
-  "flex": {
-    "baseUri": "https://platease.apac.ooyala-flex.com/api",
-    "workspaceId": 126518,
-    "user": "Your Flex User ID",
-    "pass": "Your Flex Password",
-    "workflowDefinitionId": 126519
+  "dest": {
+    "smtp": {
+      "host": "SMTP server's host name or IP address",
+      "port": 465,
+      "secure": true, // use TLS
+      "auth": {
+        "user": "User Name",
+        "pass": "Password"
+      }
+    },
+    message: {
+      "from": "email address",
+      "to": [{array of email addresses}],
+      "cc": [{array of email addresses}],
+      "bcc": [{array of email addresses}]
+    }
   }
 }
 ```
-The above example is to detect TS and MP4 files uploaded within 10 minutes
+The above example is to check all S3 buckets every 10 minutes searching for any newly uploaded TS or MP4 files and, if exists, send an email to the specified SMTP server
 
 # Run / Stop
 

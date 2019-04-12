@@ -2,7 +2,7 @@ const config = require('config');
 const AWS = require('aws-sdk');
 const debug = require('debug')('s3-watcher');
 
-const {checkIfAssetExists, launchNotificationWorkflow} = require('./launch');
+const {notifyIncommingFile} = require('./notify');
 
 const {
   extensionList,
@@ -16,12 +16,14 @@ function checkIfNewFile(file, extensionList) {
   if (!extensionList.some(extension => fileName.length === fileName.lastIndexOf(extension) + extension.length)) {
     return false;
   }
+
   const lastModified = new Date(file.LastModified);
   const currentTime = new Date();
   if (lastModified.getTime() >= currentTime.getTime() - THRESHOLD) {
     // If the file was modified within the specified minutes
     return true;
   }
+
   return false;
 }
 
@@ -29,21 +31,25 @@ function visitDir(s3, prefix, extensionList, updateList) {
   const currentPrefix = prefix.Prefix;
   return s3.listObjects(prefix).promise()
     .then(async ({Contents: list, CommonPrefixes: prefixList}) => {
-      // debug(`[${currentPrefix}] ---`);
+      debug(`[${currentPrefix}] ---`);
       for (const file of list) {
         const fileName = file.Key;
         if (fileName === currentPrefix) {
           continue;
         }
-        // debug(JSON.stringify(file, null, 2));
+
+        debug(JSON.stringify(file, null, 2));
+
         if (checkIfNewFile(file, extensionList)) {
           debug(`Update found: ${fileName}`);
           updateList.push(`${fileName}`);
         }
       }
+
       if (!prefixList || prefixList.length === 0) {
         return;
       }
+
       for (const dir of prefixList) {
         await visitDir(s3, dir, extensionList, updateList);
       }
@@ -67,10 +73,7 @@ function checkUpdated(bucketName) {
       if (updateList.length > 0) {
         for (const file of updateList) {
           const fileName = `/${bucketName}/${file}`;
-          if (await checkIfAssetExists(fileName)) {
-            continue;
-          }
-          await launchNotificationWorkflow(fileName);
+          await notifyIncommingFile(fileName);
         }
       }
     });
@@ -84,7 +87,8 @@ function checkAllBuckets() {
         if (!bucketName.startsWith('ingest-')) {
           continue;
         }
-        // debug(`Enter bucket: ${bucketName}`);
+
+        debug(`Enter bucket: ${bucketName}`);
         await checkUpdated(bucketName);
       }
     });
