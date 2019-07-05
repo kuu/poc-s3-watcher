@@ -2,12 +2,22 @@ const config = require('config');
 const AWS = require('aws-sdk');
 const debug = require('debug')('s3-watcher');
 
-const {notifyIncommingFile} = require('./notify');
+let destModule;
+
+const {dest} = config;
 
 const {
   extensionList,
   nMinutesBefore
 } = config.s3;
+
+if (dest.smtp) {
+  destModule = require('./smtp');
+} else if (dest.file) {
+  destModule = require('./file');
+}
+
+const {notifyIncommingFile} = destModule;
 
 const THRESHOLD = nMinutesBefore * 60000;
 
@@ -84,7 +94,12 @@ function checkAllBuckets() {
   return s3.listBuckets().promise()
     .then(async ({Buckets: list}) => {
       for (const {Name: bucketName} of list) {
+        /*
         if (!bucketName.startsWith('ingest-')) {
+          continue;
+        }
+        */
+        if (!bucketName.startsWith('blackout-')) {
           continue;
         }
 

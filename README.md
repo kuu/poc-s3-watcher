@@ -27,6 +27,9 @@ In ./config/default.json
     "nMinutesBefore": 10
   },
   "dest": {
+    "file": {
+      "root": "/User/foo/logs"
+    },
     "smtp": {
       "host": "SMTP server's host name or IP address",
       "port": 465,

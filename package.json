@@ -21,11 +21,12 @@
   },
   "homepage": "https://github.com/kuu/poc-s3-watcher#readme",
   "dependencies": {
-    "aws-sdk": "^2.437.0",
+    "aws-sdk": "^2.488.0",
     "config": "^3.1.0",
+    "csv-parser": "^2.3.0",
     "debug": "^4.1.1",
     "forever": "^1.0.0",
-    "nodemailer": "^6.1.0"
+    "nodemailer": "^6.2.1"
   },
   "devDependencies": {
     "xo": "^0.24.0"
@@ -36,6 +37,7 @@
     "rules": {
       "capitalized-comments": 0,
       "no-await-in-loop": 0,
+      "padding-line-between-statements": 0,
       "unicorn/catch-error-name": 0
     }
   }
