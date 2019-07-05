@@ -25,9 +25,11 @@ function getFileName() {
 
 function getFilePath() {
   const {root} = file;
+  /*
   if (!fs.existsSync(root)) {
     fs.mkdirSync(root);
   }
+  */
 
   const filePath = path.join(root, getFileName());
   if (!fs.existsSync(filePath)) {
