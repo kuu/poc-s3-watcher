@@ -94,7 +94,7 @@ function checkAllBuckets() {
   return s3.listBuckets().promise()
     .then(async ({Buckets: list}) => {
       for (const {Name: bucketName} of list) {
-        if (!bucketName.startsWith('ingest-')) {
+        if (!bucketName.startsWith('ingest-') || bucketName === 'ingest-tbs') {
           continue;
         }
 
