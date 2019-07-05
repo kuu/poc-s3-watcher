@@ -94,12 +94,7 @@ function checkAllBuckets() {
   return s3.listBuckets().promise()
     .then(async ({Buckets: list}) => {
       for (const {Name: bucketName} of list) {
-        /*
         if (!bucketName.startsWith('ingest-')) {
-          continue;
-        }
-        */
-        if (!bucketName.startsWith('blackout-')) {
           continue;
         }
 
