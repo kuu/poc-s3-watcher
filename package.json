@@ -24,7 +24,7 @@
     "aws-sdk": "^2.380.0",
     "config": "^3.0.1",
     "debug": "^4.1.0",
-    "node-fetch": "^2.3.0"
+    "node-fetch": "^3.1.1"
   },
   "devDependencies": {
     "forever": "^0.15.3",
