@@ -22,7 +22,7 @@
   "homepage": "https://github.com/kuu/poc-s3-watcher#readme",
   "dependencies": {
     "aws-sdk": "^2.380.0",
-    "config": "^3.0.1",
+    "config": "^3.3.8",
     "debug": "^4.1.0",
     "node-fetch": "^2.3.0"
   },
